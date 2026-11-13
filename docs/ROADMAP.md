@@ -1,24 +1,24 @@
 # AIPTIM Development Roadmap
 
-This roadmap describes intended work, **not features already implemented**.
+This roadmap distinguishes **implemented source code**, configured CI, and future work. A successful APK build must be verified separately in GitHub Actions.
 
 ## Stage 1 — Project foundation
 
 - [x] Create the public GitHub repository.
 - [x] Publish an initial English README with the Android APK download location and installation guidance.
-- [ ] Choose and add a compatible free/open-source software license.
-- [ ] Select project architecture, package/application identifiers, and supported Android versions.
-- [ ] Set up a test workflow and CI for source code.
-- [ ] Define a local-first data model for projects, topics, prompts, conversations, recorded time, and related-question groups.
+- [x] Add an MIT free/open-source software license.
+- [x] Select Android MVP architecture, package ID (`com.blasllavero.aiptim`), and Android 8+ minimum.
+- [x] Add GitHub Actions workflow for unit tests and debug APK (build result to be verified).
+- [x] Define initial SQLite tables for projects, prompts, time totals, and optional conversation links.\n- [ ] Add topic and related-question group model.
 
 ## Stage 2 — Android MVP
 
-- [ ] Create a Kotlin/Jetpack Compose application with adaptive layouts and correct system navigation bar insets.
-- [ ] Create projects and topics, start/pause/stop active timers, and edit recorded time.
-- [ ] Store records locally in Room.
-- [ ] Show project totals and a time-by-topic bar chart.
-- [ ] Support configurable time budgets and notifications.
-- [ ] Prepare a signed or clearly labeled test APK through GitHub Actions.
+- [x] Create a Kotlin/Jetpack Compose project with safe-area-aware layout.
+- [x] Create projects and prompts; start/pause/resume manual timers.\n- [ ] Add topics, session editing, and idle-time detection.
+- [x] Persist records in local SQLite (initial implementation).\n- [ ] Assess a later Room migration without losing data.
+- [x] Show totals and comparative progress bars by project.\n- [ ] Add topic-based interactive charts.
+- [x] Allow a per-prompt minute limit and show an in-app exceeded state.\n- [ ] Implement notifications in background and wearable forwarding.
+- [x] Configure a clearly labeled, debug-signed APK upload as a temporary GitHub Actions artifact.\n- [ ] Confirm a successful CI run and install-test the resulting APK.
 
 ## Stage 3 — Web application and browser extension
 

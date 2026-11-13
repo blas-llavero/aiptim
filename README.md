@@ -2,9 +2,9 @@
 
 **Track your prompts. Organize your knowledge. Manage your time.**
 
-AIPTIM is a planned **free and open-source Android application, desktop web app, and browser extension** for measuring active time spent working with AI prompts, organizing ChatGPT/OpenAI conversations by project and topic, finding similar questions, and maintaining an offline knowledge library.
+AIPTIM is a **free and open-source Android app under active development**, with a desktop web app and browser extension planned for measuring active time spent working with AI prompts, organizing ChatGPT/OpenAI conversations by project and topic, finding similar questions, and maintaining an offline knowledge library.
 
-> **Project status: early development.** No APK, web app release, or browser extension is available yet. Features below describe project goals, not existing functionality.
+> **Project status: Android manual-timer MVP source available (v0.1.0).** GitHub Actions is configured to compile a debug APK; check the Actions page for the latest build result. No official release APK, web app, browser extension, or automatic ChatGPT prompt monitoring is available yet.
 >
 > **Independent project.** AIPTIM is not developed by, affiliated with, endorsed by, or sponsored by OpenAI.
 
@@ -12,7 +12,7 @@ AIPTIM is a planned **free and open-source Android application, desktop web app,
 
 **APK download location (once published):** [GitHub Releases](https://github.com/blas-llavero/aiptim/releases).
 
-There is **no APK available to download yet**. Do not download an APK claiming to be AIPTIM from an unverified third-party site.
+There is **no official APK release yet**. GitHub Actions is configured to build a **debug test APK**; availability depends on a successful workflow run. Do not download an APK claiming to be AIPTIM from an unverified third-party site.
 
 ### Install the APK on Android (when a release becomes available)
 
@@ -23,16 +23,32 @@ There is **no APK available to download yet**. Do not download an APK claiming t
 5. Confirm the installation and open **AIPTIM**.
 6. Review the permissions requested by the app. Afterwards, you may disable the temporary **Install unknown apps** permission.
 
-The APK's exact filename, minimum Android version, and package ID will be documented when the first build is available. Test builds may also appear as temporary [GitHub Actions artifacts](https://github.com/blas-llavero/aiptim/actions), which can require signing in to GitHub and can expire.
+The APK's exact filename, minimum Android version, and package ID will be documented when the first build is available. Test builds appear as temporary [GitHub Actions artifacts](https://github.com/blas-llavero/aiptim/actions) after a successful build.
 
-### Use the Android app (planned workflow)
+### Install a GitHub Actions test APK (when the build is green)
 
-1. Create a **project**, **topic**, or **folder**.
-2. Start an active-work timer for a prompt or import an existing conversation.
-3. Review detected related questions; confirm or adjust grouping when necessary.
-4. Browse saved conversations, math formulas, and compatible charts **offline**.
-5. Set a time budget for a prompt, related-question group, or entire project.
-6. Receive a mobile notification when the budget is exceeded; compatible wearables may mirror Android notifications.
+1. Open [Android debug APK workflow runs](https://github.com/blas-llavero/aiptim/actions/workflows/android-debug.yml).
+2. Select a **successful** run on the `main` branch.
+3. Under **Artifacts**, select **aiptim-android-debug-apk**.
+4. Download the ZIP, extract `app-debug.apk`, and transfer it to your Android device if needed.
+5. Open `app-debug.apk` on Android and follow the Android installation instructions above.
+
+Test APKs are debug-signed and are **not** production releases. GitHub may require you to sign in to download Actions artifacts; artifacts are temporary and expire. The test build can be installed on Android 8.0 (API 26) or newer.
+
+### Build the Android app yourself
+
+Open this repository in Android Studio with JDK 17, Android SDK 35 and Gradle 8.11.1 installed, or run `gradle :app:assembleDebug` from the repository root. The CI workflow installs the dependencies and runs unit tests automatically. This initial repository uses a pinned Gradle version in CI rather than a Gradle Wrapper.
+
+### Use the Android app (current MVP)
+
+1. Tap **Add project** and enter a name.
+2. Select the project and tap **Add prompt**.
+3. Give the prompt a title. Optionally paste the URL of a ChatGPT conversation and set a time limit in minutes.
+4. Tap **Start / Resume** when you begin working on that prompt, and **Pause** when you finish. Only one timer can run at a time.
+5. Switch to **Analytics** to see totals by project. Project data and timers are saved locally, including across app restarts.
+6. If the elapsed time exceeds the chosen limit, the prompt is marked **Limit exceeded** in the app; background notifications are **not implemented yet**.
+
+**Accuracy warning:** the manual timer uses wall-clock time and continues to count until you pause it, even when the Android app is in the background. It cannot detect if you were actually reading, typing, or idle. Automatic prompt-level monitoring will need a separate browser integration or explicit permitted mechanism.
 
 **Important:** the official ChatGPT Android app does not provide AIPTIM with a built-in, per-prompt timing feed. Accurate per-prompt monitoring requires a supported integration or user-initiated workflow; device-level app usage statistics alone cannot distinguish individual prompts.
 
@@ -69,9 +85,9 @@ English (`en`), Catalan (`ca`), Spanish (`es`), French (`fr`), German (`de`), It
 - **Idle time:** should be excluded when it can be detected reliably; users can edit recorded sessions.
 - **Project total:** based on recorded session durations, not merely how long a browser tab remained open.
 
-## Proposed implementation (not yet built)
+## Implementation and proposed architecture
 
-- **Android:** Kotlin, Jetpack Compose, Room (local database), Android notification APIs, system-window-inset support so navigation bars never cover controls.
+- **Android MVP implemented:** Kotlin, Jetpack Compose, SQLiteOpenHelper for local persistence, responsive Compose UI with Android system-bar insets. A later Room migration and Android notifications are planned.
 - **Web:** TypeScript, React, Vite, progressive web app (PWA), IndexedDB for offline data.
 - **Extension:** Chromium Manifest V3 initially; evaluate additional browsers later.
 - **Content:** portable Markdown plus structured metadata, KaTeX for math, and a free/open-source charting library for compatible interactive views.
@@ -91,7 +107,7 @@ See [Development roadmap](docs/ROADMAP.md).
 
 ## License
 
-A specific free/open-source software license has **not yet been chosen**. A `LICENSE` file will be added before source-code distribution claims are finalized.
+AIPTIM source code is released under the [MIT License](LICENSE). Third-party dependencies keep their respective licenses.
 
 ## Credits
 
