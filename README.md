@@ -4,7 +4,7 @@
 
 AIPTIM is a **free and open-source Android app under active development**, with a desktop web app and browser extension planned for measuring active time spent working with AI prompts, organizing ChatGPT/OpenAI conversations by project and topic, finding similar questions, and maintaining an offline knowledge library.
 
-> **Project status: Android manual-timer MVP source available (v0.1.0).** GitHub Actions is configured to compile a debug APK; check the Actions page for the latest build result. No official release APK, web app, browser extension, or automatic ChatGPT prompt monitoring is available yet.
+> **Project status: Android manual-timer MVP source available (v0.1.0).** GitHub Actions successfully compiled and tested debug APK v0.1.0 on November 13, 2026 ([successful run](https://github.com/blas-llavero/aiptim/actions/runs/43481470753)). This build has not yet been install-tested on a physical device. No official release APK, web app, browser extension, or automatic ChatGPT prompt monitoring is available yet.
 >
 > **Independent project.** AIPTIM is not developed by, affiliated with, endorsed by, or sponsored by OpenAI.
 
@@ -12,7 +12,7 @@ AIPTIM is a **free and open-source Android app under active development**, with 
 
 **APK download location (once published):** [GitHub Releases](https://github.com/blas-llavero/aiptim/releases).
 
-There is **no official APK release yet**. GitHub Actions is configured to build a **debug test APK**; availability depends on a successful workflow run. Do not download an APK claiming to be AIPTIM from an unverified third-party site.
+There is **no official APK release yet**. A **debug test APK** is now available from the [successful GitHub Actions run](https://github.com/blas-llavero/aiptim/actions/runs/43481470753). It is not an official release. Do not download an APK claiming to be AIPTIM from an unverified third-party site.
 
 ### Install the APK on Android (when a release becomes available)
 
