@@ -4,7 +4,7 @@
 
 AIPTIM is a **free and open-source Android app under active development**, with a desktop web app and browser extension planned for measuring active time spent working with AI prompts, organizing ChatGPT/OpenAI conversations by project and topic, finding similar questions, and maintaining an offline knowledge library.
 
-> **Project status: Android manual-timer MVP (v0.1.0) and an experimental automatic ChatGPT web tracker (v0.2.0).** GitHub Actions compiled and unit-tested AIPTIM v0.2.0 on November 13, 2026 ([successful Android build](https://github.com/blas-llavero/aiptim/actions/runs/43489968603)); the browser-extension syntax validation also [passed](https://github.com/blas-llavero/aiptim/actions/runs/43489968665). The v0.2.0 Android build has not yet been install-tested on a physical device. No official release APK or standalone web app is available; the experimental unpacked browser extension is available as source code.
+> **Project status: Android manual-timer MVP (v0.1.0) and an experimental automatic ChatGPT web tracker (v0.3.0).** GitHub Actions compiled and unit-tested AIPTIM v0.2.0 on November 13, 2026 ([successful Android build](https://github.com/blas-llavero/aiptim/actions/runs/43489968603)); the browser-extension syntax validation also [passed](https://github.com/blas-llavero/aiptim/actions/runs/43489968665). The v0.2.0 Android build has not yet been install-tested on a physical device. No official release APK or standalone web app is available; the experimental unpacked browser extension is available as source code. The Android APK is still v0.2.0 and does not yet sync automatically with the extension.
 >
 > **Independent project.** AIPTIM is not developed by, affiliated with, endorsed by, or sponsored by OpenAI.
 
@@ -55,7 +55,7 @@ Open this repository in Android Studio with JDK 17, Android SDK 35 and Gradle 8.
 
 ## Web app — desktop use
 
-The browser-based web app will support project dashboards, topic folders, interactive charts, offline reading, and a searchable local library. An **experimental open-source browser extension** is now available for ChatGPT web, with local-only prompt capture and activity-based time estimates. See [browser extension installation and limitations](browser-extension/README.md). It must be installed explicitly by the user. It cannot read the native ChatGPT Android app.
+The browser-based web app will support project dashboards, topic folders, interactive charts, offline reading, and a searchable local library. An **experimental open-source browser extension v0.3.0** is available for ChatGPT web, with automatic, opt-in Chrome history estimates and local activity tracking by conversation. History access is a one-time browser permission; manual exports are not required for the desktop dashboard. Historical durations remain low-confidence guesses, not observed work time. See [browser extension installation and limitations](browser-extension/README.md). It must be installed explicitly by the user. It cannot read the native ChatGPT Android app.
 
 **Web app URL:** not published yet. This README will link to the live app after deployment.
 
