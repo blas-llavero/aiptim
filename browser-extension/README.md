@@ -1,36 +1,39 @@
-# AIPTIM browser extension — automatic tracking prototype
+# AIPTIM browser extension — automatic conversation tracking v0.3.0
 
-This first prototype tracks **ChatGPT in desktop Chromium browsers**, without an OpenAI API key or subscription. It does not automatically read the official ChatGPT Android app.
+AIPTIM tracks **ChatGPT conversations automatically in desktop Chrome or Edge**. It estimates earlier visits from Chrome history and observes new active sessions without needing manual exports or an OpenAI API key.
 
-## Install on Chrome / Edge (desktop)
+## Installation (one time)
 
-1. Download the [AIPTIM GitHub repository](https://github.com/blas-llavero/aiptim) using **Code → Download ZIP**, then extract it.
-2. Open **chrome://extensions** (or **edge://extensions**).
-3. Turn on **Developer mode**.
-4. Choose **Load unpacked** and select the **browser-extension** folder.
-5. Refresh an existing **chatgpt.com** tab.
+1. Download the [AIPTIM repository](https://github.com/blas-llavero/aiptim) with **Code → Download ZIP**, and unzip it.
+2. Open **chrome://extensions** or **edge://extensions**.
+3. Enable **Developer mode**, select **Load unpacked**, and choose the **browser-extension** directory.
+4. Reload open ChatGPT tabs.
+5. Open the AIPTIM extension popup and press **Enable automatic history**. Review and approve the browser's history-access permission. This is optional, but necessary for historical estimates.
 
-## Automatic usage
+After authorization, AIPTIM scans Chrome history automatically on installation/startup and daily, as well as when you request a refresh. No manual Takeout export is required.
 
-- Send prompts normally in ChatGPT web. AIPTIM attempts to identify each newly sent prompt (send button, form submit, or message DOM).
-- Writing time is measured while you type in the active prompt editor.
-- Reading time is estimated while the tab is foreground and you interact with it; waiting time is separately estimated when a generation-stop button can be detected.
-- Time stops accruing if the browser tab is hidden, unfocused, or has had no interaction for 90 seconds.
-- Click the AIPTIM extension icon to see the records, search, pause, or **Export JSON** for Android.
-- This prototype records only new prompts observed after installing the extension. It does not backfill previous conversations or know time spent in past sessions.
+## How tracking works
 
-## Privacy and limitations
+- **Observed time:** AIPTIM records active seconds while a ChatGPT conversation tab is visible, focused, and receiving activity within a 90-second idle threshold. It does not track the official Android ChatGPT app.
+- **Historical estimates:** AIPTIM reads matching ChatGPT history URLs and their visit times. It estimates two minutes for isolated visits or uses a gap to the next ChatGPT visit when that gap is 1 second to 5 minutes. **These are assumptions, not evidence of actual time spent.** All such estimates are marked **low confidence**.
+- **Avoiding double-counting:** Locally recorded visits after tracking began are excluded from history estimates. Synced visits, where available, remain separately estimated; these may overlap activity from another device.
+- **Conversation grouping:** The /c/<id> URL identifies a conversation. Conversation titles are used as initial labels; AI topic grouping is a future feature.
+- **Prompt detection:** The previous experimental per-prompt DOM tracker remains in place, but the new per-conversation time estimate does not depend on detecting individual prompts.
+- **Local storage:** All records are kept in the extension's local browser storage. No OpenAI key, third-party server, paid service, or manual export is required for the browser dashboard.
 
-- The extension reads **only** declared ChatGPT/OpenAI Playground pages and only stores **user-submitted prompt text**, not assistant replies.
-- Data is stored locally through **chrome.storage.local**; there are no extension-to-server requests. You choose whether to export.
-- UI changes on ChatGPT can break prompt detection; submissions may be missed or duplicated. Review collected data before relying on it.
-- Reading is an **activity-based estimate**, not gaze or proof that you read a response.
-- It does **not** track the official ChatGPT Android app, or run automatically in regular mobile Chrome.
-- The OpenAI Playground site has different UI patterns; its compatibility is experimental.
-- The extension can be paused or removed. **Delete local records** erases its own stored activity.
+## Limitations
 
-## Import into AIPTIM Android
+- Chrome's history API provides visit timestamps, **not dwell time**, and may not include every device's synced history.
+- Browser UI and history retention policies can prevent some conversations being detected.
+- The extension cannot read Google-account history remotely, nor the history of the official ChatGPT Android app.
+- The Android APK currently does **not** synchronize the extension's records automatically. This requires a separate, consent-based synchronization design.
+- The extension's **Export JSON** remains optional for backup and manual Android transfer; it is not part of normal desktop tracking.
+- The Android v0.2 importer expects the older schema v1 export. The v0.3 backup uses schema v2 and needs an updated Android importer.
+- Historical estimates and observed time are displayed separately; adding them together can still overestimate total time.
+- Permission to access Chrome history triggers a broad browser warning even though AIPTIM filters results to ChatGPT URLs.
 
-Export a JSON file from the extension and transfer it to your Android device. In AIPTIM, use **Import browser records**, select that JSON, and view your imported prompts by conversation. Importing the same exported records twice must not duplicate time.
+## Privacy
 
-Independent MIT-licensed open-source project; not an official OpenAI or ChatGPT product.
+AIPTIM stores only ChatGPT conversation URLs, titles, timestamps, estimated durations, observed durations, and user prompts detected by the existing optional DOM tracking. It does not upload browsing history. Review the open-source code before installing. Remove the extension to stop monitoring; use **Delete local records** to erase saved data.
+
+Independent MIT-licensed project, not affiliated with OpenAI.

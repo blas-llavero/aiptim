@@ -28,4 +28,7 @@ jobs:
           node --check browser-extension/background.js
           node --check browser-extension/content.js
           node --check browser-extension/popup.js
-          node -e 'const m=require("./browser-extension/manifest.json"); if(m.manifest_version!==3) process.exit(1);'
+          node --check browser-extension/history-estimator.js
+          node -e 'const m=require("./browser-extension/manifest.json"); if(m.manifest_version!==3 || !m.optional_permissions.includes("history")) process.exit(1);'
+      - name: Test Chrome history estimation
+        run: node --test browser-extension/history-estimator.test.cjs

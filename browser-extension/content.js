@@ -10,6 +10,24 @@
   let lastInteraction = Date.now(), lastTick = Date.now(), lastFlush = Date.now();
   let draftWritingMs = 0, readingMs = 0, waitingMs = 0;
   let paused = false, capturedText = "", capturedAt = 0, scheduled = null;
+  let observedBucketMs = 0, observedConversation = null;
+  function canonicalConversation() {
+    const match = location.pathname.match(/(?:^|\/)c\/([a-z0-9_-]{8,})(?:\/|$)/i);
+    if (!match || !["chatgpt.com", "chat.openai.com"].includes(location.hostname))
+      return null;
+    return "https://chatgpt.com/c/" + match[1].toLowerCase();
+  }
+  function flushObserved() {
+    if (observedConversation && observedBucketMs > 0) {
+      chrome.runtime.sendMessage({
+        type: "AIPTIM_CONVERSATION_TICK",
+        url: observedConversation,
+        ms: Math.min(10000, Math.round(observedBucketMs))
+      }).catch(() => {});
+    }
+    observedBucketMs = 0;
+    observedConversation = canonicalConversation();
+  }
   const chatUrl = () => location.origin + location.pathname;
   function composer() {
     return document.querySelector("#prompt-textarea") ||
@@ -48,6 +66,7 @@
       }
     }
     readingMs = 0; waitingMs = 0; lastFlush = Date.now();
+    flushObserved();
   }
   async function capture(rawText) {
     if (paused) return;
@@ -128,8 +147,15 @@
   setInterval(() => {
     const now = Date.now(), delta = Math.max(0,Math.min(now-lastTick,2000));
     lastTick = now;
+    if (observedConversation !== canonicalConversation()) flushObserved();
     if (!paused && document.visibilityState === "visible" &&
         document.hasFocus() && now-lastInteraction <= IDLE_MS) {
+      // Per-conversation activity is independent of prompt detection. We keep
+      // these totals separate to avoid counting a prompt twice.
+      if (canonicalConversation()) {
+        observedConversation = canonicalConversation();
+        observedBucketMs += delta;
+      }
       if (composerFocused() && getText(composer())) draftWritingMs += delta;
       else if (lastRecordId) {
         if (generating()) waitingMs += delta;

@@ -1,10 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "AIPTIM — ChatGPT Prompt Time Tracker",
-  "version": "0.2.0",
-  "description": "Locally track time writing and reading ChatGPT prompts. No API key or cloud upload.",
+  "name": "AIPTIM — ChatGPT Conversation Time Tracker",
+  "version": "0.3.0",
+  "description": "Automatically estimate time from Chrome's ChatGPT history and measure active conversation time locally. History access is optional.",
   "permissions": [
-    "storage"
+    "storage",
+    "alarms"
+  ],
+  "optional_permissions": [
+    "history"
   ],
   "content_scripts": [
     {
@@ -20,7 +24,7 @@
     }
   ],
   "action": {
-    "default_title": "AIPTIM — local prompt activity",
+    "default_title": "AIPTIM — conversation activity",
     "default_popup": "popup.html"
   },
   "background": {
