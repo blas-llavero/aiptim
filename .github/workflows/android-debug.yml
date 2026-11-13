@@ -23,7 +23,11 @@ jobs:
       # GitHub-hosted ubuntu-latest already provides Android command-line tools.
       # Avoid setup-android@v3: its legacy 'sdkmanager tools' request can fail.
       - name: Install Android SDK 35
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+        run: |
+          SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+          test -n "$SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses > /dev/null || true
+          "$SDKMANAGER" "platforms;android-35" "build-tools;35.0.0"
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
         with:
