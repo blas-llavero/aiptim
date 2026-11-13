@@ -1,0 +1,31 @@
+name: Browser extension validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "browser-extension/**"
+      - ".github/workflows/browser-extension-check.yml"
+  pull_request:
+    paths:
+      - "browser-extension/**"
+      - ".github/workflows/browser-extension-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate JavaScript syntax and manifest
+        run: |
+          node --check browser-extension/background.js
+          node --check browser-extension/content.js
+          node --check browser-extension/popup.js
+          node -e 'const m=require("./browser-extension/manifest.json"); if(m.manifest_version!==3) process.exit(1);'

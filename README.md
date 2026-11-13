@@ -4,7 +4,7 @@
 
 AIPTIM is a **free and open-source Android app under active development**, with a desktop web app and browser extension planned for measuring active time spent working with AI prompts, organizing ChatGPT/OpenAI conversations by project and topic, finding similar questions, and maintaining an offline knowledge library.
 
-> **Project status: Android manual-timer MVP source available (v0.1.0).** GitHub Actions successfully compiled and tested debug APK v0.1.0 on November 13, 2026 ([successful run](https://github.com/blas-llavero/aiptim/actions/runs/43481470753)). This build has not yet been install-tested on a physical device. No official release APK, web app, browser extension, or automatic ChatGPT prompt monitoring is available yet.
+> **Project status: Android manual-timer MVP (v0.1.0) and an experimental automatic ChatGPT web tracker (v0.2.0).** GitHub Actions successfully compiled and tested debug APK v0.1.0 on November 13, 2026 ([successful run](https://github.com/blas-llavero/aiptim/actions/runs/43481470753)). This build has not yet been install-tested on a physical device. No official release APK or standalone web app is available; the experimental unpacked browser extension is available as source code.
 >
 > **Independent project.** AIPTIM is not developed by, affiliated with, endorsed by, or sponsored by OpenAI.
 
@@ -39,14 +39,15 @@ Test APKs are debug-signed and are **not** production releases. GitHub may requi
 
 Open this repository in Android Studio with JDK 17, Android SDK 35 and Gradle 8.11.1 installed, or run `gradle :app:assembleDebug` from the repository root. The CI workflow installs the dependencies and runs unit tests automatically. This initial repository uses a pinned Gradle version in CI rather than a Gradle Wrapper.
 
-### Use the Android app (current MVP)
+### Use the Android app (v0.2 browser import and manual timers)
 
-1. Tap **Add project** and enter a name.
-2. Select the project and tap **Add prompt**.
-3. Give the prompt a title. Optionally paste the URL of a ChatGPT conversation and set a time limit in minutes.
-4. Tap **Start / Resume** when you begin working on that prompt, and **Pause** when you finish. Only one timer can run at a time.
-5. Switch to **Analytics** to see totals by project. Project data and timers are saved locally, including across app restarts.
-6. If the elapsed time exceeds the chosen limit, the prompt is marked **Limit exceeded** in the app; background notifications are **not implemented yet**.
+1. For automatic ChatGPT web tracking, follow the [desktop browser extension installation guide](browser-extension/README.md) and use **Export JSON** from the extension. Transfer the JSON file to Android and tap **Import browser records (JSON)** in AIPTIM. Reimporting the same IDs replaces prior totals instead of duplicating them.
+2. For manual tracking, tap **Add project** and enter a name.
+3. Select the project and tap **Add prompt**.
+4. Give the prompt a title. Optionally paste the URL of a ChatGPT conversation and set a time limit in minutes.
+5. Tap **Start / Resume** when you begin working on that prompt, and **Pause** when you finish. Only one timer can run at a time.
+6. Switch to **Analytics** to see totals by project. Project data and timers are saved locally, including across app restarts.
+7. If the elapsed time exceeds the chosen limit, the prompt is marked **Limit exceeded** in the app; background notifications are **not implemented yet**.
 
 **Accuracy warning:** the manual timer uses wall-clock time and continues to count until you pause it, even when the Android app is in the background. It cannot detect if you were actually reading, typing, or idle. Automatic prompt-level monitoring will need a separate browser integration or explicit permitted mechanism.
 
@@ -54,7 +55,7 @@ Open this repository in Android Studio with JDK 17, Android SDK 35 and Gradle 8.
 
 ## Web app — desktop use
 
-The browser-based web app will support project dashboards, topic folders, interactive charts, offline reading, and a searchable local library. A companion **open-source browser extension** is planned for supported ChatGPT/OpenAI web interfaces to measure *active work time* more precisely. The extension will require explicit installation and user permission.
+The browser-based web app will support project dashboards, topic folders, interactive charts, offline reading, and a searchable local library. An **experimental open-source browser extension** is now available for ChatGPT web, with local-only prompt capture and activity-based time estimates. See [browser extension installation and limitations](browser-extension/README.md). It must be installed explicitly by the user. It cannot read the native ChatGPT Android app.
 
 **Web app URL:** not published yet. This README will link to the live app after deployment.
 
@@ -89,7 +90,7 @@ English (`en`), Catalan (`ca`), Spanish (`es`), French (`fr`), German (`de`), It
 
 - **Android MVP implemented:** Kotlin, Jetpack Compose, SQLiteOpenHelper for local persistence, responsive Compose UI with Android system-bar insets. A later Room migration and Android notifications are planned.
 - **Web:** TypeScript, React, Vite, progressive web app (PWA), IndexedDB for offline data.
-- **Extension:** Chromium Manifest V3 initially; evaluate additional browsers later.
+- **Extension implemented (experimental):** Chromium Manifest V3, narrow ChatGPT/Playground host matches, local-only records and JSON export. HTML changes can break detection; no official OpenAI ChatGPT history API.
 - **Content:** portable Markdown plus structured metadata, KaTeX for math, and a free/open-source charting library for compatible interactive views.
 - **Transfer:** user-controlled export/import between devices first; optional private synchronization only after the security model has been reviewed.
 

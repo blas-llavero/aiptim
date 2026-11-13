@@ -24,9 +24,10 @@ This roadmap distinguishes **implemented source code**, configured CI, and futur
 
 - [ ] Create a React/TypeScript PWA with IndexedDB-backed local storage.
 - [ ] Provide searchable folders, interactive statistics, and offline reading.
-- [ ] Investigate permitted browser-extension integration on supported ChatGPT/OpenAI web pages.
+- [x] Add experimental local-only Chromium extension for tracking new ChatGPT web prompts and time estimates.
+- [ ] Robustly test DOM integration against current ChatGPT interface and supported OpenAI Playground.
 - [ ] Distinguish active editing, reading, waiting for a response, and idle periods where possible.
-- [ ] Keep browser permissions narrow and document precisely what data is read.
+- [x] Keep extension permissions narrow and document precisely what data is read.
 
 ## Stage 4 — Import and knowledge organization
 
@@ -35,7 +36,8 @@ This roadmap distinguishes **implemented source code**, configured CI, and futur
 - [ ] Provide manual and local-model-assisted topic grouping, including review of similar prompts.
 - [ ] Render Markdown and math formulas while preserving references to external media.
 - [ ] Investigate portable representations of compatible interactive charts.
-- [ ] Implement secure user-controlled backup, export, and import.
+- [x] Add browser JSON export and Android import using persistent IDs.
+- [ ] Add full encrypted backup/import and multi-device synchronization.
 
 ## Stage 5 — Language, accessibility, and wearables
 

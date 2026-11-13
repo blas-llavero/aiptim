@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AIPTIM</title><link rel="stylesheet" href="popup.css"></head>
+<body>
+<header><h1>AIPTIM</h1><p>AI Prompt Time Manager · Local tracking</p></header>
+<section class="summary"><div><strong id="total">0 min</strong><small>Measured time</small></div>
+<div><strong id="count">0</strong><small>Recorded prompts</small></div></section>
+<section class="toolbar"><label><input type="checkbox" id="pause"> Pause tracking</label>
+<button id="export">Export JSON</button></section>
+<p class="note">Only focused, visible ChatGPT tabs count. Reading and waiting times are estimates, with a 90-second inactivity timeout. Records stay on this device.</p>
+<h2>Recent prompts</h2><input id="search" type="search" placeholder="Search saved prompts" aria-label="Search recorded prompts">
+<div id="list" aria-live="polite"></div>
+<footer><button id="clear" class="danger">Delete local records</button><span id="status" role="status"></span></footer>
+<script src="popup.js"></script>
+</body></html>

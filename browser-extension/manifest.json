@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "AIPTIM — ChatGPT Prompt Time Tracker",
+  "version": "0.2.0",
+  "description": "Locally track time writing and reading ChatGPT prompts. No API key or cloud upload.",
+  "permissions": [
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://platform.openai.com/playground/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "AIPTIM — local prompt activity",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}

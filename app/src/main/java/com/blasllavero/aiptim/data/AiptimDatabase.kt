@@ -17,7 +17,9 @@ data class TrackedPrompt(
     val conversationUrl: String,
     val accumulatedMs: Long,
     val runningSinceMs: Long?,
-    val limitMinutes: Int
+    val limitMinutes: Int,
+    val source: String = "manual",
+    val promptText: String = ""
 ) {
     fun elapsedMs(now: Long): Long =
         accumulatedMs + (runningSinceMs?.let { (now - it).coerceAtLeast(0L) } ?: 0L)
@@ -29,7 +31,7 @@ data class TrackedPrompt(
  * All user-controlled timer state is persisted, including a running timer.
  */
 class AiptimDatabase(context: Context) :
-    SQLiteOpenHelper(context.applicationContext, "aiptim-local.db", null, 1) {
+    SQLiteOpenHelper(context.applicationContext, "aiptim-local.db", null, 2) {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
@@ -47,15 +49,29 @@ class AiptimDatabase(context: Context) :
                 accumulated_ms INTEGER NOT NULL DEFAULT 0,
                 running_since_ms INTEGER,
                 limit_minutes INTEGER NOT NULL DEFAULT 30,
+                import_id TEXT UNIQUE,
+                prompt_text TEXT NOT NULL DEFAULT '',
+                source TEXT NOT NULL DEFAULT 'manual',
+                writing_ms INTEGER NOT NULL DEFAULT 0,
+                reading_ms INTEGER NOT NULL DEFAULT 0,
+                waiting_ms INTEGER NOT NULL DEFAULT 0,
                 FOREIGN KEY(project_id) REFERENCES projects(id)
             )""".trimIndent()
         )
         db.execSQL("CREATE INDEX idx_prompts_project ON prompts(project_id)")
+        db.execSQL("CREATE UNIQUE INDEX idx_prompts_import_id ON prompts(import_id)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // The first schema has no migrations yet. Do not discard user records.
-        throw IllegalStateException("Database migration required: $oldVersion to $newVersion")
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE prompts ADD COLUMN import_id TEXT")
+            db.execSQL("CREATE UNIQUE INDEX idx_prompts_import_id ON prompts(import_id)") 
+            db.execSQL("ALTER TABLE prompts ADD COLUMN prompt_text TEXT NOT NULL DEFAULT ''")
+            db.execSQL("ALTER TABLE prompts ADD COLUMN source TEXT NOT NULL DEFAULT 'manual'")
+            db.execSQL("ALTER TABLE prompts ADD COLUMN writing_ms INTEGER NOT NULL DEFAULT 0")
+            db.execSQL("ALTER TABLE prompts ADD COLUMN reading_ms INTEGER NOT NULL DEFAULT 0")
+            db.execSQL("ALTER TABLE prompts ADD COLUMN waiting_ms INTEGER NOT NULL DEFAULT 0")
+        }
     }
 
     fun readProjects(): List<Project> {
@@ -73,7 +89,8 @@ class AiptimDatabase(context: Context) :
         val result = mutableListOf<TrackedPrompt>()
         readableDatabase.rawQuery(
             """SELECT id, project_id, title, conversation_url,
-                      accumulated_ms, running_since_ms, limit_minutes
+                      accumulated_ms, running_since_ms, limit_minutes,
+                      source, prompt_text
                FROM prompts ORDER BY id DESC""".trimIndent(),
             null
         ).use { cursor ->
@@ -85,7 +102,9 @@ class AiptimDatabase(context: Context) :
                     conversationUrl = cursor.getString(3),
                     accumulatedMs = cursor.getLong(4),
                     runningSinceMs = if (cursor.isNull(5)) null else cursor.getLong(5),
-                    limitMinutes = cursor.getInt(6)
+                    limitMinutes = cursor.getInt(6),
+                    source = cursor.getString(7),
+                    promptText = cursor.getString(8)
                 )
             }
         }

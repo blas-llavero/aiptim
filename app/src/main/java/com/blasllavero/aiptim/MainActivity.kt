@@ -2,6 +2,8 @@ package com.blasllavero.aiptim
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.horizontalScroll
@@ -46,7 +48,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import com.blasllavero.aiptim.data.importExtensionJson
+import java.io.ByteArrayOutputStream
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.blasllavero.aiptim.data.AiptimDatabase
@@ -86,6 +91,34 @@ private fun AiptimScreen(database: AiptimDatabase) {
     var showProjectDialog by remember { mutableStateOf(false) }
     var showPromptDialog by remember { mutableStateOf(false) }
     var now by remember { mutableLongStateOf(System.currentTimeMillis()) }
+    var importStatus by remember { mutableStateOf("") }
+    val appContext = LocalContext.current
+    val importPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) {
+            try {
+                val json = appContext.contentResolver.openInputStream(uri)?.use { input ->
+                    // Bound file size to 8 MiB so large untrusted JSON cannot exhaust RAM.
+                    val buffer = ByteArray(8192)
+                    val output = ByteArrayOutputStream()
+                    var size = 0
+                    while (true) {
+                        val count = input.read(buffer)
+                        if (count < 0) break
+                        size += count
+                        require(size <= 8 * 1024 * 1024) { "File exceeds 8 MB limit." }
+                        output.write(buffer, 0, count)
+                    }
+                    output.toString(Charsets.UTF_8.name())
+                } ?: error("Cannot open file.")
+                val result = database.importExtensionJson(json)
+                projects = database.readProjects()
+                prompts = database.readPrompts()
+                importStatus = "Imported " + result.added + " prompts; updated " + result.updated + "."
+            } catch (e: Exception) {
+                importStatus = "Import failed: " + (e.message ?: "Invalid file")
+            }
+        }
+    }
 
     fun refresh() {
         projects = database.readProjects()
@@ -162,6 +195,12 @@ private fun AiptimScreen(database: AiptimDatabase) {
                     TextButton(onClick = { showProjectDialog = true }) {
                         Text("+ Add project")
                     }
+                }
+                OutlinedButton(onClick = {
+                    importPicker.launch(arrayOf("application/json", "text/plain"))
+                }) { Text("Import browser records (JSON)") }
+                if (importStatus.isNotBlank()) {
+                    Text(importStatus, style = MaterialTheme.typography.bodySmall)
                 }
                 if (projects.isEmpty()) {
                     Card(Modifier.fillMaxWidth()) {
@@ -306,6 +345,14 @@ private fun PromptCard(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(prompt.title, fontWeight = FontWeight.SemiBold)
+            if (prompt.source == "browser-extension") {
+                Text("Imported from ChatGPT browser tracking",
+                    style = MaterialTheme.typography.bodySmall)
+                if (prompt.promptText.isNotBlank()) {
+                    Text(prompt.promptText.take(600),
+                        style = MaterialTheme.typography.bodyMedium)
+                }
+            }
             Text(formatDuration(elapsed), style = MaterialTheme.typography.titleLarge)
             Text(
                 "Limit: ${prompt.limitMinutes} min" +
@@ -314,8 +361,10 @@ private fun PromptCard(
                 else MaterialTheme.colorScheme.onSurfaceVariant
             )
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = onToggle) {
-                    Text(if (prompt.runningSinceMs == null) "Start / Resume" else "Pause")
+                if (prompt.source == "manual") {
+                    Button(onClick = onToggle) {
+                        Text(if (prompt.runningSinceMs == null) "Start / Resume" else "Pause")
+                    }
                 }
                 if (prompt.conversationUrl.isNotEmpty()) {
                     OutlinedButton(onClick = { uriHandler.openUri(prompt.conversationUrl) }) {
