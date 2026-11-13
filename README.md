@@ -4,7 +4,7 @@
 
 AIPTIM is a **free and open-source Android app under active development**, with a desktop web app and browser extension planned for measuring active time spent working with AI prompts, organizing ChatGPT/OpenAI conversations by project and topic, finding similar questions, and maintaining an offline knowledge library.
 
-> **Project status: Android manual-timer MVP (v0.1.0) and an experimental automatic ChatGPT web tracker (v0.2.0).** GitHub Actions successfully compiled and tested debug APK v0.1.0 on November 13, 2026 ([successful run](https://github.com/blas-llavero/aiptim/actions/runs/43481470753)). This build has not yet been install-tested on a physical device. No official release APK or standalone web app is available; the experimental unpacked browser extension is available as source code.
+> **Project status: Android manual-timer MVP (v0.1.0) and an experimental automatic ChatGPT web tracker (v0.2.0).** GitHub Actions compiled and unit-tested AIPTIM v0.2.0 on November 13, 2026 ([successful Android build](https://github.com/blas-llavero/aiptim/actions/runs/43489968603)); the browser-extension syntax validation also [passed](https://github.com/blas-llavero/aiptim/actions/runs/43489968665). The v0.2.0 Android build has not yet been install-tested on a physical device. No official release APK or standalone web app is available; the experimental unpacked browser extension is available as source code.
 >
 > **Independent project.** AIPTIM is not developed by, affiliated with, endorsed by, or sponsored by OpenAI.
 
@@ -12,7 +12,7 @@ AIPTIM is a **free and open-source Android app under active development**, with 
 
 **APK download location (once published):** [GitHub Releases](https://github.com/blas-llavero/aiptim/releases).
 
-There is **no official APK release yet**. A **debug test APK** is now available from the [successful GitHub Actions run](https://github.com/blas-llavero/aiptim/actions/runs/43481470753). It is not an official release. Do not download an APK claiming to be AIPTIM from an unverified third-party site.
+There is **no official APK release yet**. A **v0.2.0 debug test APK** is available from the [successful GitHub Actions run](https://github.com/blas-llavero/aiptim/actions/runs/43489968603). It is not an official release. Do not download an APK claiming to be AIPTIM from an unverified third-party site.
 
 ### Install the APK on Android (when a release becomes available)
 
@@ -27,7 +27,7 @@ The APK's exact filename, minimum Android version, and package ID will be docume
 
 ### Install a GitHub Actions test APK (when the build is green)
 
-1. Open [Android debug APK workflow runs](https://github.com/blas-llavero/aiptim/actions/workflows/android-debug.yml).
+1. Open the [successful AIPTIM v0.2.0 Android build](https://github.com/blas-llavero/aiptim/actions/runs/43489968603) (or select the most recent green run from [all Android builds](https://github.com/blas-llavero/aiptim/actions/workflows/android-debug.yml)).
 2. Select a **successful** run on the `main` branch.
 3. Under **Artifacts**, select **aiptim-android-debug-apk**.
 4. Download the ZIP, extract `app-debug.apk`, and transfer it to your Android device if needed.
